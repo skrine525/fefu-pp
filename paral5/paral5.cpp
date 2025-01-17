@@ -60,7 +60,7 @@ std::vector<table_row> run_experiment(sum_ptr sum) {
     auto V = std::make_unique<unsigned[]>(n);
 
     for (unsigned T = 1; T <= P; ++T) {
-        set_num_threads_auto();
+        set_num_threads(T);
 
         for (size_t i = 0; i < n; ++i)
             V[i] = i + T;
