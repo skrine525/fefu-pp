@@ -14,7 +14,7 @@
 static unsigned g_num_threads = std::thread::hardware_concurrency();
 
 struct table_row {
-    unsigned average; double time, speedup;
+    unsigned average, thread; double time, speedup;
 };
 
 #if !defined (__cplusplus) || __cplusplus < 20200000
@@ -43,6 +43,7 @@ std::vector<table_row> run_experiment(rand_ptr rand) {
         set_num_threads(T);
         auto t1 = std::chrono::steady_clock::now();
         table[T - 1].average = rand(V.get(), n, 3, 1000, 3000) / n;
+        table[T - 1].thread = T;
         auto t2 = std::chrono::steady_clock::now();
         table[T - 1].time = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
         table[T - 1].speedup = table[0].time / table[T - 1].time;
@@ -211,9 +212,9 @@ int main(int argc, char* argv[])
 
     std::vector<table_row> tbr1 = run_experiment(randomize);
     auto out1 = std::ofstream("randomizer.csv", std::ios_base::out);
-    out1 << "Average,Time,Speedup\n";
+    out1 << "Threads,Match,Time (ms),Speedup,Efficiency\n";
     for (auto t : tbr1) {
-        out1 << t.average << ',' << t.time << ',' << t.speedup << "\n";
+        out1 << t.thread << ',' << t.average << ',' << t.time << ',' << t.speedup << "\n";
     }
 
     /*std::cout << unsigned(powm(additive_monoid(7u), 5u)) << '\n';
